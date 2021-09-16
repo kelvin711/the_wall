@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <title>{{ user.firstname }}'s Dashboard</title>
+</head>
+<body>
+    <div class="container">
+        <nav class="navbar navbar-expand-lg navbar-inverse bg-light top-fixed" role="navigation">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">CodingDojo Wall</a>
+                <div class="navbar-collapse collapse">
+                    <div class="mr-auto">     
+                    </div>
+                        <ul class="navbar-nav">
+                        <li class="nav-item"><a href="#" class="nav-link">Welcome {{ user.firstname }}</a></li>
+                        <li class="nav-item"><a href="/logout" class="btn btn-outline-info">Logout</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </div>
+    <br>
+
+    <div class="container">
+        <div class="post_message">
+            <form action="/create_message" method="POST">
+                {% csrf_token %}
+                    <div class="form-group">
+                        <label for="message"><h4>Post a message</h4></label>
+                        <textarea class="form-control" rows="3" name="message"></textarea>
+                        <button type="submit" class="btn btn-outline-primary m-2 float-right ml-2">Post Message</button>
+                    </div>
+                </form>
+        </div>
+        <br>
+        <br>
+
+        <div class="log"> 
+            <div for="user_messages" class="card m-2 p-2 bg-light">
+                {% for message in messages%}
+                <h3>Thought posted by {{message.user.firstname}} {{message.user.lastname}}</h3>
+                <em>{{message.user.firstname}} {{message.user.lastname}} {{message.updated_at}}</em>
+                <p>{{message.messageText}}</p>
+                <div for="user_comments" class="card m-2 p-2 bg-white">
+                    {% for comment in message.comments.all %}
+                    <h6>Comment posted by {{comment.user.firstname}} {{comment.user.lastname}}</h6>
+                        <em>{{comment.user.firstname}} {{comment.user.lastname}} {{comment.updated_at}}</em>
+                        <p>{{comment.comment_text}}</p>
+                    {% endfor %}
+                </div>
+                <form action="/create_comment/{{message.id}}" method="POST">
+                    {% csrf_token %}
+                    <div class="form-group w-75 m-2 p-2">
+                    <label for="comment"><h4>Post a comment</h4></label>
+                    <textarea class="form-control" rows="`" name="comment"></textarea>
+                    <button type="submit" class="btn btn-outline-success m-2 float-right ml-2">Post Comment</button> 
+                </form>
+            </div>  
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>
